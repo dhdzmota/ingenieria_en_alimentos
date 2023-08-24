@@ -12,7 +12,7 @@ el objetivo de este proyecto es aplicar técnicas de IA para el diseño de alime
 salud, proporcionados por ingredientes endémicos de México con componentes bioactivos, a precios
 accesibles y sensorialmente acordes con las expectativas de los consumidores.
 
-Project Organization
+Organización del Proyecto:
 ------------
 
     ├── LICENSE
