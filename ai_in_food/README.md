@@ -1,7 +1,16 @@
 Desarrollo de nuevos productos alimenticios funcionales con ingredientes endémicos de México, utilizando inteligencia artificial (IA)
 ==============================
 
-En México se desperdician alrededor de 28 millones de toneladas de alimentos al año. Según la SEDESOL,
+En México se desperdician alrededor de 28 millones de toneladas de alimentos al año. Según la SEDESOL, 
+esta cantidad de alimento serviría para alimentar a 7 millones de mexicanos y disminuir la inseguridad
+alimentaria. La población en esta condición aunada a aquella con recursos, pero con una mala educación
+alimentaria, resulta en individuos con sobre peso u obesidad vulnerables a enfermedades crónicodegenerativas.
+La ingesta de alimentos funcionales y nutritivos podría prevenir estas enfermedades.
+Para aportar soluciones innovadoras, al alcance de todos, para esta problemática se requiere un enfoque
+interdisciplinario como el uso de la inteligencia artificial (IA) en la ingeniería de alimentos. Por lo tanto,
+el objetivo de este proyecto es aplicar técnicas de IA para el diseño de alimentos con beneficios para la
+salud, proporcionados por ingredientes endémicos de México con componentes bioactivos, a precios
+accesibles y sensorialmente acordes con las expectativas de los consumidores.
 
 Project Organization
 ------------
