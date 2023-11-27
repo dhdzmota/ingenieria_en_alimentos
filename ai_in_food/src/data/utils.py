@@ -11,6 +11,9 @@ def read_data(path, **additional_kwargs):
         data = pd.read_parquet(path)
     elif path.endswith('.xlsx'):
         data = pd.read_excel(path, **additional_kwargs)
+    elif path.endswith('.pkl'):
+        with open(path, 'rb') as f:
+            data = pickle.load(f)
     else:
         data = pd.read_csv(path)
     return data
