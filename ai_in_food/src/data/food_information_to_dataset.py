@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
-import os
 
 from src.data.utils import (
+    get_general_path,
+    join_paths,
     read_data,
     treat_text,
     process_food_element,
     save_as_pickle,
-    get_response_dataframe_from_dict_with_categs
+    get_response_dataframe_from_dict_with_categs,
 )
 
 from src.data.read_human_processed_information import \
@@ -75,18 +76,16 @@ def get_unique_nutrition_names(info):
     return list(info.name.unique())
 
 if __name__ == "__main__":
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    general_path = os.path.join(file_path, '..', '../')
-    data_raw_path = os.path.join(general_path, 'data', 'raw')
-    data_interim_path = os.path.join(general_path, 'data', 'interim')
-    data_interim_filename = os.path.join(data_interim_path, 'interim.csv')
+    general_path = get_general_path()
+    data_raw_path = join_paths(general_path, 'data', 'raw')
+    data_interim_path = join_paths(general_path, 'data', 'interim')
+    data_interim_filename = join_paths(data_interim_path, 'interim.csv')
 
-
-    data_path = os.path.join(data_raw_path, 'FoodData_Central_csv_2023-04-20')
-    data_dict_path = os.path.join(general_path, 'data', 'data_dict')
-    r_dict_path = os.path.join(data_dict_path, 'r_dict.pkl')
-    x_dict_path = os.path.join(data_dict_path, 'x_dict.pkl')
-    s_dict_path = os.path.join(data_dict_path, 's_dict.pkl')
+    data_path = join_paths(data_raw_path, 'FoodData_Central_csv_2023-04-20')
+    data_dict_path = join_paths(general_path, 'data', 'data_dict')
+    r_dict_path = join_paths(data_dict_path, 'r_dict.pkl')
+    x_dict_path = join_paths(data_dict_path, 'x_dict.pkl')
+    s_dict_path = join_paths(data_dict_path, 's_dict.pkl')
 
     # Raw data
     food = read_data(f'{data_path}/food.csv')
@@ -105,12 +104,16 @@ if __name__ == "__main__":
     response_r = read_data(r_dict_path)
     response_r = get_response_dataframe_from_dict_with_categs(response_r)
     #response_s = read_data(s_dict_path)
+
+    # Make a simple clean-up
     nutrient_info.loc[
         nutrient_info.nutrient_nbr.notna(), 'nutrient_nbr_int'
     ] = nutrient_info.loc[
         nutrient_info.nutrient_nbr.notna()
     ].nutrient_nbr.astype('int')
 
+    # Select only the survey_fndds_food category and the relevant columns
+    # We want to know to which category they really belong to.
     fndss_dt = food.data_type == 'survey_fndds_food'
     relevant_list = ['description', 'fdc_id', 'food_category_id', 'publication_date']
     food_survey_food = survey_fndds_food.merge(food[fndss_dt][relevant_list], on='fdc_id', how='left')
@@ -118,8 +121,13 @@ if __name__ == "__main__":
         .merge(category, how='left', left_on='wweia_category_code', right_on='wweia_food_category') \
         .drop(['wweia_category_code', 'food_category_id', 'start_date', 'end_date', 'publication_date'], axis=1)
 
+    # Each food dictionary made by the team has already considered a quite large sample of foods considered,
+    # we will use that to obtain the property of each food
+
     relevant_indexes = statistics_of_response_var(response_r)['unique_food_considered']
+
     food_ingredient_nutrition_info = {}
+    # Now we get the ingredient list for each food, and the nutritional information aswell!
     for food in relevant_indexes:
         food_ingredient_nutrition_info[food] = {}
         ingredients, missing_ingredients, nutrition = get_food_information(food)
@@ -136,7 +144,9 @@ if __name__ == "__main__":
                 food_ingredient_nutrition_info_processed.nutrition.apply(get_unique_nutrition_names).sum())
         )
     )
+
     saving_all_info = []
+    # Now each for each food in each ingredient we find, we are make the union (by adding) the nutrient value name.
     for i in range(food_ingredient_nutrition_info_processed.shape[0]):
         test = pd.DataFrame(
             food_ingredient_nutrition_info_processed.nutrition.iloc[i])
@@ -150,6 +160,8 @@ if __name__ == "__main__":
         test = pd.concat([test_n, test_mn]).sort_index().T
         test.index = [test_idx]
         saving_all_info.append(test)
+
+    # Now we have all the information to concat all the datasets
     saving_all_info_df = pd.concat(saving_all_info).reset_index().rename(
         columns={'index': 'fdc_id'})
     final_dataset = response_r.merge(

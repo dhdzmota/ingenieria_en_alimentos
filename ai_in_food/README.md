@@ -64,9 +64,11 @@ Organización del Proyecto:
 
 How to execute successfully the scripts?
 --------
-1. Download data from the following link and included it in the corresponding folder path:
-`ai_in_food/data/raw` it should have the name  `FoodData_Central_csv_2023-04-20.zip` or something similar.
-2. Extract the zip files, into a carpet in the same location keeping the same name `FoodData_Central_csv_2023-04-20` but without the .zip segment.
-3. This should be enough to execute the next instructions.
-4. Make an empty virtual environment for the project and install the corresponding dependencies: `pip install -r requirements.txt`
-5. Run the `general_pipeline.py` python script. 
+1. Download data from the following [link](https://fdc.nal.usda.gov/download-datasets.html), by going to the `Latest Downloads` section, into the `Full Download of All Data Types` where the release date is `10/2023` and included it in the corresponding folder path:
+`ai_in_food/data/raw` it should have the name  `FoodData_Central_csv_2023-04-20.zip` or something similar (*Note that the date in the file name might change due to upgrades on the information, if so please save or rename information with the above name in the same location).
+2. Extract the zip files, into a folder in the same location keeping the same name `FoodData_Central_csv_2023-04-20` but without the .zip segment.
+3. There are some additional files that must be downloaded, these files are files that the `food engineering` team manage to produce from a previous anaylsis, and must be in the following path `ai_in_food/data/external/created_by_members` with their original names, 
+for now the most important files are the following 3 files: `Base de datos FAI RZR.xlsx`, `Base de datos FAI XVR.xlsx` and `depuración.csv`. These files from the `food engineering` team are found in the conversations and chats of the FAI group. (*Note, this should be enough to execute the programs). 
+5. In order to manage correctfully the dependencies versions, make an empty virtual environment for the project and install the corresponding dependencies: `pip install -r requirements.txt`
+6. Run the `general_pipeline.py` python script. 
+7. Now in the `ai_in_food/data/interim` path there should be an additional file with the name interim.csv, which is until now, the representation of what the model will consume. 

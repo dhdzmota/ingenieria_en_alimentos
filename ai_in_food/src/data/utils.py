@@ -1,6 +1,17 @@
 import pandas as pd
 import unidecode
 import pickle
+import os
+
+
+
+def get_general_path():
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    general_path = os.path.join(file_path, '..', '../')
+    return general_path
+
+def join_paths(*p1):
+    return os.path.join(*p1)
 
 
 def read_data(path, **additional_kwargs):
