@@ -19,7 +19,8 @@ Organización del Proyecto:
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
+    │   ├── data_dict      <- Generated dictionaries with categories.
+    │   ├── external       <- Data from investigators (third party sources.)
     │   ├── interim        <- Intermediate data that has been transformed.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
@@ -28,7 +29,7 @@ Organización del Proyecto:
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    │                         `1-DHM-initial-data-exploration`.
     │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
@@ -42,11 +43,9 @@ Organización del Proyecto:
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
+    │   ├── data           <- Scripts to download process and generate data
     │   │
     │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
@@ -54,7 +53,7 @@ Organización del Proyecto:
     │   │   └── train_model.py
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │            └── visualize.py
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
@@ -62,3 +61,12 @@ Organización del Proyecto:
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+How to execute successfully the scripts?
+--------
+1. Download data from the following link and included it in the corresponding folder path:
+`ai_in_food/data/raw` it should have the name  `FoodData_Central_csv_2023-04-20.zip` or something similar.
+2. Extract the zip files, into a carpet in the same location keeping the same name `FoodData_Central_csv_2023-04-20` but without the .zip segment.
+3. This should be enough to execute the next instructions.
+4. Make an empty virtual environment for the project and install the corresponding dependencies: `pip install -r requirements.txt`
+5. Run the `general_pipeline.py` python script. 
