@@ -4,18 +4,25 @@ import pickle
 import os
 
 
-
 def get_general_path():
+    """
+    Function to get the general path of this repo.
+    """
     file_path = os.path.dirname(os.path.abspath(__file__))
     general_path = os.path.join(file_path, '..', '../')
     return general_path
 
 def join_paths(*p1):
+    """
+    Helper function to join paths
+    """
     return os.path.join(*p1)
 
 
 def read_data(path, **additional_kwargs):
-    """Helper function to read data"""
+    """
+    Helper function to read data
+    """
     if path.endswith('.csv'):
         data = pd.read_csv(path, **additional_kwargs)
     elif path.endswith('.parquet'):
@@ -33,7 +40,7 @@ def read_data(path, **additional_kwargs):
 def process_food_element(fe):
     """
     Function that takes a food element (short for fe, which is an index for the
-    fdc_id), assumes a transformation to string and then it cleans it.
+    fdc_id), assumes a transformation to string, finally it cleans it.
     """
     fe = str(fe)
     fe = int(
@@ -46,7 +53,9 @@ def process_food_element(fe):
 
 
 def treat_text(text):
-    '''Custom function to clean text'''
+    """
+    Custom function to clean text
+    """
     text = text.replace(' ', '_')
     text = text.replace(',', '')
     text = text.replace('/', '_')
@@ -59,6 +68,9 @@ def treat_text(text):
 
 
 def save_as_pickle(what, where):
+    """
+    Helper function to save a file `what` into the path `where` as a pickle.
+    """
     with open(where, 'wb') as file:
         pickle.dump(what, file)
 

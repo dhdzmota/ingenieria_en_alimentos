@@ -7,5 +7,3 @@ command_list = [
 
 for command in command_list:
     subprocess.run(command.split(' '))
-
-
