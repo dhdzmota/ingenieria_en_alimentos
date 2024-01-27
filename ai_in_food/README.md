@@ -72,5 +72,5 @@ How to execute successfully the scripts?
 5. There are some additional files that must be downloaded, these files are documents that the `food engineering` team manage to produce from a previous anaylsis, and must be in the following path `ai_in_food/data/external/created_by_members` with their original names.
 6. The most important files are the following ones: `Base de datos FAI RZR.xlsx`, `Base de datos FAI XVR.xlsx` and `depuración.csv`. These files from the `food engineering` team are found in the conversations and chats of the FAI group. (*Note, once the previous steps are completed, this should be enough to execute the programs). 
 7. In order to manage correctly the dependencies versions, create a new `virtual environment` for the project and install the corresponding dependencies: `pip install -r requirements.txt`. 
-8. Run the `general_pipeline.py` python script. 
-9. Now in the `ai_in_food/data/interim` path there should be an additional file with the name interim.csv, which is until now, the representation of what the model will consume. 
+8. Run the `general_pipeline.py` python script. This script contains the correct order of execution: `python general_pipeline.py`
+9. Now in the `ai_in_food/data/interim` path there should be an additional file with the name interim.csv, which is until now, the representation of what the model will consume.
