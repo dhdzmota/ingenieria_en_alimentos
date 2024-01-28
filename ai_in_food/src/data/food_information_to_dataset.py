@@ -15,63 +15,104 @@ from src.data.read_human_processed_information import \
 def get_food_information(test_food):
     global food_survey_food, input_food, nutrient_info
     global fndds_ingredient_nutrient_value, food
-    food_survey_food[food_survey_food.fdc_id == test_food]
 
+    # Check the corresponding food survey food with the index
+    food_description = food_survey_food[
+        food_survey_food.fdc_id == test_food
+        ].description.values[0]
+
+    # Get the associated ingredients from the relation of the test food
+    # in the input_food table
     ingredients = input_food[input_food.fdc_id == test_food].sort_values(
         'seq_num')
+
+    # Keep the ingredients codes
     codes = ingredients.sr_code.unique()
 
-    nutrient_info_reduced = \
-    nutrient_info[nutrient_info.nutrient_nbr_int.notna()][
-        ['name', 'unit_name', 'nutrient_nbr_int']]
-    specific_nutrient_val = fndds_ingredient_nutrient_value \
-        [fndds_ingredient_nutrient_value['ingredient code'].isin(codes)] \
-        .drop_duplicates(['ingredient code', 'Nutrient code']) \
-        .merge(
+    # Get the nutrient information (units and nutrient numbers)
+    nutrient_info_reduced = nutrient_info[
+        nutrient_info.nutrient_nbr_int.notna()
+    ][['name', 'unit_name', 'nutrient_nbr_int']]
+
+    # Get the nutrients values for each ingredient.
+    specific_nutrient_val = fndds_ingredient_nutrient_value[
+        fndds_ingredient_nutrient_value['ingredient code'].isin(codes)
+    ].drop_duplicates(
+        ['ingredient code', 'Nutrient code']
+    ).merge(
         nutrient_info_reduced,
         left_on='Nutrient code',
-        right_on='nutrient_nbr_int') \
-        [['ingredient code', 'Nutrient code', 'Nutrient value', 'name',
-          'unit_name']]
+        right_on='nutrient_nbr_int'
+    )[
+        ['ingredient code',
+         'Nutrient code',
+         'Nutrient value',
+         'name',
+         'unit_name'
+         ]
+    ]
     specific_nutrient_val = specific_nutrient_val[
-        specific_nutrient_val['Nutrient value'] != 0] \
-        .sort_values(['Nutrient code', 'Nutrient value']).reset_index(
-        drop=True) \
-        .drop_duplicates(['ingredient code', 'Nutrient code'])
-
+        specific_nutrient_val['Nutrient value'] != 0
+        ].sort_values(
+        ['Nutrient code', 'Nutrient value']
+    ).reset_index(
+        drop=True
+    ).drop_duplicates(
+        ['ingredient code', 'Nutrient code']
+    )
     missing_codes = list(
-        set(codes) - set(specific_nutrient_val['ingredient code'].unique()))
+        set(codes) - set(specific_nutrient_val['ingredient code'].unique())
+    )
 
-    missing_ingredients = ingredients[ingredients.sr_code.isin(missing_codes)]
+    missing_ingredients = ingredients[
+        ingredients.sr_code.isin(missing_codes)
+    ]
 
     nutrient_info_reduced = \
-    nutrient_info[nutrient_info.nutrient_nbr_int.notna()][
-        ['name', 'unit_name', 'nutrient_nbr_int']]
-    specific_nutrient_val = fndds_ingredient_nutrient_value\
-        [fndds_ingredient_nutrient_value['ingredient code'].isin(codes)]\
-        .drop_duplicates(['ingredient code', 'Nutrient code'])\
-        .merge(
+        nutrient_info[nutrient_info.nutrient_nbr_int.notna()][
+            ['name', 'unit_name', 'nutrient_nbr_int']]
+    specific_nutrient_val = fndds_ingredient_nutrient_value[
+        fndds_ingredient_nutrient_value['ingredient code'].isin(codes)
+    ].drop_duplicates(
+        ['ingredient code', 'Nutrient code']
+    ).merge(
         nutrient_info_reduced,
         left_on='Nutrient code',
-        right_on='nutrient_nbr_int')\
-        [['ingredient code', 'Nutrient code', 'Nutrient value', 'name',
-          'unit_name']]
+        right_on='nutrient_nbr_int'
+    )[
+        ['ingredient code',
+         'Nutrient code',
+         'Nutrient value',
+         'name',
+         'unit_name']
+    ]
     specific_nutrient_val = specific_nutrient_val[
-        specific_nutrient_val['Nutrient value'] != 0] \
-        .sort_values(['ingredient code', 'Nutrient code', 'Nutrient value']) \
-        .reset_index(drop=True) \
-        .drop_duplicates(['ingredient code', 'Nutrient code'])
+        specific_nutrient_val['Nutrient value'] != 0
+    ].sort_values(
+        ['ingredient code', 'Nutrient code', 'Nutrient value']
+    ).reset_index(
+        drop=True
+    ).drop_duplicates(
+        ['ingredient code', 'Nutrient code']
+    )
 
     ingredients.index = ingredients.index.map(str)
     missing_ingredients.index = missing_ingredients.index.map(str)
     specific_nutrient_val.index = specific_nutrient_val.index.map(str)
 
-    return ingredients, missing_ingredients, specific_nutrient_val
+    result_tuple = (
+        ingredients,
+        missing_ingredients,
+        specific_nutrient_val,
+        food_description
+    )
+    return result_tuple
 
 
 def get_unique_nutrition_names(info):
     info = pd.DataFrame(info)
     return list(info.name.unique())
+
 
 if __name__ == "__main__":
     general_path = get_general_path()
@@ -141,7 +182,8 @@ if __name__ == "__main__":
         category,
         how='left',
         left_on='wweia_category_code',
-        right_on='wweia_food_category').drop(drop_cols, axis=1)
+        right_on='wweia_food_category'
+    ).drop(drop_cols, axis=1)
 
     # Each food dictionary made by the team has already considered a quite
     # large sample of foods considered, we will use that to obtain the property
@@ -156,7 +198,7 @@ if __name__ == "__main__":
     # information as well!
     for food in relevant_indexes:
         food_ingredient_nutrition_info[food] = {}
-        ingr, miss_ingr, nutrition = get_food_information(food)
+        ingr, miss_ingr, nutrition, descr = get_food_information(food)
         food_ingredient_nutrition_info[food]['ingredients'] = ingr[
             ['sr_code', 'sr_description']
         ].to_dict()
@@ -170,6 +212,8 @@ if __name__ == "__main__":
         food_ingredient_nutrition_info[food]['unique_ingredients'] = (
             ingr.sr_description.unique()
         )
+        food_ingredient_nutrition_info[food]['description'] = descr
+
     food_ingredient_nutrition_info_processed = pd.DataFrame(
         food_ingredient_nutrition_info
     ).T
@@ -212,15 +256,19 @@ if __name__ == "__main__":
 
         # Concat missing and available nutrients.
         all_nutrients_food = pd.concat(
-            [nutrient_addition, missing_nutrients_df]).sort_index().T
+            [nutrient_addition, missing_nutrients_df]
+        ).sort_index().T
 
         all_nutrients_food.index = [food_index]
-        # Get the list of ingredients corresponding to the food product.
-        food_ingredients = list(
-            food_ingredient_nutrition_info_processed.iloc[i].unique_ingredients
-        )
-        all_nutrients_food['ingredients'] = [food_ingredients]
 
+        # Get the list of ingredients corresponding to the food product.
+        ind_finip = food_ingredient_nutrition_info_processed.iloc[i]
+        # Obtain the ingredients
+        food_ingredients = list(ind_finip.unique_ingredients)
+
+        # Get the product description and the ingredients
+        all_nutrients_food['product_description'] = ind_finip.description
+        all_nutrients_food['ingredients'] = [food_ingredients]
         # Append the dataframe row
         product_all_info.append(all_nutrients_food)
 
@@ -232,9 +280,8 @@ if __name__ == "__main__":
     # Generate the unit_dictionary
     unit_dictionary = pd.concat(unit_dictionary_list).groupby(
         "name"
-    ).unit_name.apply(
-        lambda x: list(set(x))
-    )
+    ).unit_name.apply(lambda x: list(set(x)))
+
     nutrient_unit_dictionary = pd.DataFrame(unit_dictionary)
     nutrient_unit_dictionary.to_csv(nutrient_unit_dict_path)
 
@@ -246,5 +293,6 @@ if __name__ == "__main__":
                left_on='fdc_id_to',
                right_on='fdc_id',
                how='inner')
+
     final_dataset.to_csv(data_interim_filename)
     final_dataset.to_parquet(data_interim_filename_p)

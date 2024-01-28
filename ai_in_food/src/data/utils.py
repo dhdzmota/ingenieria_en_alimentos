@@ -12,6 +12,7 @@ def get_general_path():
     general_path = os.path.join(file_path, '..', '../')
     return general_path
 
+
 def join_paths(*p1):
     """
     Helper function to join paths
